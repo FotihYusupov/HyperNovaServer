@@ -6,5 +6,3 @@ export class AppService {
     return { message: 'Server is run' };
   }
 }
-
-//#hello Worlds
