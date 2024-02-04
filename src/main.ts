@@ -6,5 +6,3 @@ async function bootstrap() {
   await app.listen(5001);
 }
 bootstrap();
-
-// comment
