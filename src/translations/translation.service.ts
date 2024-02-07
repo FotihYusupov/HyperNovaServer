@@ -5,15 +5,39 @@ import { promises as fs } from 'fs';
 
 @Injectable()
 export class TranslationService {
-  async getAllTranslations(): Promise<any> {
-    const languages = ['uz', 'kr', 'en', 'ru'];
-    const translations = {};
+  async getAllTranslations(): Promise<any[]> {
+    const languages = ['uz', 'ru', 'en', 'kr']; // Language codes
+    const directory = join(process.cwd(), '/locales');
     try {
-      for (const lang of languages) {
-        const file = join(process.cwd(), `/locales/${lang}.json`);
-        const data = await fs.readFile(file, 'utf8');
-        translations[lang] = JSON.parse(data);
+      const translations = [];
+
+      // Read translations from all JSON files
+      const translationData = await Promise.all(
+        languages.map(async (lang) => {
+          const filePath = join(directory, `${lang}.json`);
+          const data = await fs.readFile(filePath, 'utf8');
+          return { language: lang, data: JSON.parse(data) };
+        }),
+      );
+
+      // Get all unique keys across different JSON files
+      const keys = [
+        ...new Set(translationData.flatMap((entry) => Object.keys(entry.data))),
+      ];
+
+      // Construct translations for each key across different languages
+      for (const key of keys) {
+        const translationObject = { message: key };
+
+        for (const translation of translationData) {
+          const translationValue = translation.data[key];
+          translationObject[translation.language] =
+            translationValue !== undefined ? translationValue : null;
+        }
+
+        translations.push(translationObject);
       }
+
       return translations;
     } catch (err) {
       throw new Error(`Error reading translation files: ${err.message}`);
