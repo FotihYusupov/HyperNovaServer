@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { readFile, writeFile } from 'fs';
 import { join } from 'path';
 import { promises as fs } from 'fs';
 
@@ -54,23 +53,18 @@ export class TranslationService {
     }
   }
 
-  async addColumnsToJson(lang: string, requestPayload: any): Promise<any> {
+  async addColumnsToJson(lang: string, requestPayload: any): Promise<string> {
     const file = join(process.cwd(), `locales/${lang}.json`);
-    const data = readFile(file, 'utf8', (err, data) => {
-      if (err) {
-        return `Error reading file ${lang}.json`;
-      }
-      const jsonData = JSON.parse(data);
-      jsonData[Object.keys(requestPayload)[0]] =
-        Object.values(requestPayload)[0];
-      writeFile(file, JSON.stringify(jsonData), (err) => {
-        if (err) {
-          return 'Error writing to file:';
-        } else {
-          return 'File has been written successfully.';
-        }
-      });
-    });
-    return data;
+    try {
+      const jsonData = await fs.readFile(file, 'utf8');
+      const parsedData = JSON.parse(jsonData);
+      const key = Object.keys(requestPayload)[0];
+      const value = Object.values(requestPayload)[0];
+      parsedData[key] = value;
+      await fs.writeFile(file, JSON.stringify(parsedData, null, 2), 'utf8');
+      return 'File has been written successfully.';
+    } catch (err) {
+      throw new Error(`Error writing to file ${lang}.json: ${err.message}`);
+    }
   }
 }
