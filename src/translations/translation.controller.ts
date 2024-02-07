@@ -5,6 +5,11 @@ import { TranslationService } from './translation.service';
 export class TranslationController {
   constructor(private readonly jsonService: TranslationService) {}
 
+  @Get()
+  async getAllTranslations(): Promise<object> {
+    return this.jsonService.getAllTranslations();
+  }
+
   @Get(':lang')
   async getTranslations(
     @Param('lang')

@@ -5,6 +5,21 @@ import { promises as fs } from 'fs';
 
 @Injectable()
 export class TranslationService {
+  async getAllTranslations(): Promise<any> {
+    const languages = ['uz', 'kr', 'en', 'ru'];
+    const translations = {};
+    try {
+      for (const lang of languages) {
+        const file = join(process.cwd(), `/locales/${lang}.json`);
+        const data = await fs.readFile(file, 'utf8');
+        translations[lang] = JSON.parse(data);
+      }
+      return translations;
+    } catch (err) {
+      throw new Error(`Error reading translation files: ${err.message}`);
+    }
+  }
+
   async getTranslations(lang: string): Promise<any> {
     const file = join(process.cwd(), `/locales/${lang}.json`);
     try {
