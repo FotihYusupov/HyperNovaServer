@@ -1,13 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TranslationSchema } from './schemas/translation.schemas';
+import { Translation, TranslationSchema } from './schemas/translation.schemas';
 import { TranslationController } from './translation.controller';
 import { TranslationService } from './translation.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'Translation', schema: TranslationSchema },
+      { name: Translation.name, schema: TranslationSchema },
     ]),
   ],
   controllers: [TranslationController],

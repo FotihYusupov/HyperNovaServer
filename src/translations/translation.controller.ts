@@ -1,35 +1,44 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { TranslationService } from './translation.service';
+import { Translation } from './schemas/translation.schemas';
 
-@Controller('json')
+@Controller('translations')
 export class TranslationController {
-  constructor(private readonly jsonService: TranslationService) {}
+  constructor(private readonly translationService: TranslationService) {}
+
+  @Post(':lang')
+  create(
+    @Param('lang') lang: string,
+    @Body() translation: any,
+  ): Promise<Translation> {
+    return this.translationService.create(
+      Object.keys(translation)[0],
+      lang,
+      Object.values(translation)[0],
+    );
+  }
 
   @Get()
-  async getAllTranslations(): Promise<object> {
-    return this.jsonService.getAllTranslations();
+  findAll(): Promise<Translation[]> {
+    return this.translationService.findAll();
+  }
+
+  @Get('search/:message')
+  search(@Param('message') message: string): Promise<Translation[]> {
+    return this.translationService.search(message);
   }
 
   @Get(':lang')
-  async getTranslations(
-    @Param('lang')
-    lang: string,
-  ): Promise<any> {
-    return this.jsonService.getTranslations(lang);
+  findById(@Param('lang') lang: string): Promise<Translation> {
+    return this.translationService.findByLang(lang);
   }
 
-  @Post('add-columns/:lang')
-  async addColumnsToAllJSON(
-    @Body()
-    requestPayload: any,
-    @Param('lang')
-    lang: string,
-  ): Promise<string> {
-    try {
-      this.jsonService.addColumnsToJson(lang, requestPayload);
-      return 'File has been written successfully.';
-    } catch (error) {
-      throw new Error('Failed to add columns to JSON files.');
-    }
+  @Put('update')
+  update(@Body() translation: Partial<any>): Promise<Translation> {
+    return this.translationService.update(
+      translation.id,
+      translation.lang,
+      translation.translation,
+    );
   }
 }

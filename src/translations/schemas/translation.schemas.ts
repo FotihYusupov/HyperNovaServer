@@ -5,19 +5,19 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 })
 export class Translation {
   @Prop()
-  key: string;
+  message: string;
 
   @Prop()
-  valueUz: string;
+  uz: string;
 
   @Prop()
-  valueEn: string;
+  en: string;
 
   @Prop()
-  valueRu: string;
+  ru: string;
 
   @Prop()
-  valueKr: string;
+  kr: string;
 }
 
 export const TranslationSchema = SchemaFactory.createForClass(Translation);
