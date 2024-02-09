@@ -10,12 +10,23 @@ export class TranslationService {
     private readonly translationModel: Model<Translation>,
   ) {}
 
-  async create(message: string, lang: string, text: any): Promise<Translation> {
-    const createdTranslation = new this.translationModel({
+  async create(message: string, lang: string, text: any): Promise<any> {
+    const findMessage = await this.translationModel.findOne({
       message: message,
     });
-    createdTranslation[lang] = text;
-    return createdTranslation.save();
+    if (!findMessage) {
+      const createdTranslation = new this.translationModel({
+        message: message,
+      });
+      createdTranslation[lang] = text;
+      return createdTranslation.save();
+    }
+    if (findMessage) {
+      findMessage[lang] = text;
+      await findMessage.save();
+      return findMessage;
+    }
+    return 'Error';
   }
 
   async findAll(): Promise<object> {
