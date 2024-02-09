@@ -18,16 +18,18 @@ export class TranslationService {
     return createdTranslation.save();
   }
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<object> {
     const translations = await this.translationModel.find();
-    return translations.map((translation) => ({
-      id: translation._id,
-      message: translation.message,
-      uz: translation.uz ? translation.uz : null,
-      ru: translation.ru ? translation.ru : null,
-      en: translation.en ? translation.en : null,
-      kr: translation.kr ? translation.kr : null,
-    }));
+    return {
+      data: translations.map((translation) => ({
+        id: translation._id,
+        message: translation.message,
+        uz: translation.uz ? translation.uz : null,
+        ru: translation.ru ? translation.ru : null,
+        en: translation.en ? translation.en : null,
+        kr: translation.kr ? translation.kr : null,
+      })),
+    };
   }
 
   async findByLang(lang: string): Promise<any> {

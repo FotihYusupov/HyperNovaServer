@@ -19,7 +19,7 @@ export class TranslationController {
   }
 
   @Get()
-  findAll(): Promise<Translation[]> {
+  findAll(): Promise<object> {
     return this.translationService.findAll();
   }
 
