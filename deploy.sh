@@ -4,7 +4,7 @@
 set -e
 
 # Navigate to your application directory (replace /path/to/your/application with the actual path)
-cd /path/to/your/application
+cd /nest-template
 
 # Pull changes from the repository (adjust branch if needed)
 git pull origin main
