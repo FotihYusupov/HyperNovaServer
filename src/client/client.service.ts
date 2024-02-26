@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import * as fs from 'fs';
 import { Client } from './schemas/client.schema';
 import { CreateClientDto } from './dto/create-client.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ClientService {
@@ -14,7 +15,7 @@ export class ClientService {
 
   async getClient(): Promise<object> {
     const client = await this.clientModel.find();
-    return client;
+    return { data: client };
   }
 
   async createClient(
@@ -22,14 +23,14 @@ export class ClientService {
     file: File & { buffer: Buffer; originalname: string },
   ): Promise<object> {
     const { originalname, buffer } = file;
-    const imagePath = `./uploads/${originalname}`;
+    const imagePath = `./uploads/${uuidv4()}${originalname}`;
     fs.writeFileSync(imagePath, buffer);
     const data = {
       title: clientDto.title,
       photoLink: `${process.env.URL}${originalname}`,
     };
     const client = await this.clientModel.create(data);
-    return client;
+    return { data: client };
   }
 
   async updateClient(
@@ -39,7 +40,7 @@ export class ClientService {
   ): Promise<object> {
     if (file) {
       const { originalname, buffer } = file;
-      const imagePath = `./uploads/${originalname}`;
+      const imagePath = `./uploads/${uuidv4()}${originalname}`;
       fs.writeFileSync(imagePath, buffer);
       const data = {
         title: clientDto.title,
@@ -48,7 +49,7 @@ export class ClientService {
       const client = await this.clientModel.findByIdAndUpdate(id, data, {
         new: true,
       });
-      return client;
+      return { data: client };
     }
     const data = {
       title: clientDto.title,
@@ -56,7 +57,7 @@ export class ClientService {
     const client = await this.clientModel.findByIdAndUpdate(id, data, {
       new: true,
     });
-    return client;
+    return { data: client };
   }
 
   async deleteClient(id: string): Promise<string> {

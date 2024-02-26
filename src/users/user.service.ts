@@ -20,9 +20,11 @@ export class UserService {
     if (findUser) {
       const token = await this.jwtService.signAsync({ id: findUser._id });
       return {
-        token,
-        username: findUser.username,
-        created_at: findUser.createdAt,
+        data: {
+          token,
+          username: findUser.username,
+          created_at: findUser.createdAt,
+        },
       };
     }
   }
@@ -30,8 +32,10 @@ export class UserService {
   async getMe(id: string): Promise<object> {
     const findUser = await this.userModel.findById(id);
     return {
-      id: findUser._id,
-      username: findUser.username,
+      data: {
+        id: findUser._id,
+        username: findUser.username,
+      },
     };
   }
 
@@ -48,6 +52,8 @@ export class UserService {
       },
       { new: true },
     );
-    return updatedUser;
+    return {
+      data: updatedUser,
+    };
   }
 }

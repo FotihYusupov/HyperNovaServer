@@ -13,12 +13,12 @@ export class VacancyService {
 
   async getVacancies(): Promise<object> {
     const vacancies = await this.vacancyModel.find();
-    return vacancies;
+    return { data: vacancies };
   }
 
   async createVacancy(createVacancy: CreateVacancy): Promise<object> {
     const vacancy = await this.vacancyModel.create(createVacancy);
-    return vacancy;
+    return { data: vacancy };
   }
 
   async updateVacancy(
@@ -29,7 +29,7 @@ export class VacancyService {
       id,
       createVacancy,
     );
-    return vacancy;
+    return { data: vacancy };
   }
 
   async deleteVacancy(id: string): Promise<string> {

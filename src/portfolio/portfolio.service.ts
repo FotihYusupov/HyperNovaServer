@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import * as fs from 'fs';
 import { Portfolio } from './schemas/portfolio.schema';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class PortfolioService {
@@ -14,7 +15,7 @@ export class PortfolioService {
 
   async getPortfolio(): Promise<object> {
     const portfolio = await this.portfolioModel.find();
-    return portfolio;
+    return { data: portfolio };
   }
 
   async createPortfolio(
@@ -22,7 +23,7 @@ export class PortfolioService {
     file: File & { buffer: Buffer; originalname: string },
   ): Promise<object> {
     const { originalname, buffer } = file;
-    const imagePath = `./uploads/${originalname}`;
+    const imagePath = `./uploads/${uuidv4()}${originalname}`;
     fs.writeFileSync(imagePath, buffer);
     const data = {
       title: portfolioDto.title,
@@ -30,7 +31,7 @@ export class PortfolioService {
       photoLink: `${process.env.URL}${originalname}`,
     };
     const portfolio = await this.portfolioModel.create(data);
-    return portfolio;
+    return { data: portfolio };
   }
 
   async updatePortfolio(
@@ -40,7 +41,7 @@ export class PortfolioService {
   ): Promise<object> {
     if (file) {
       const { originalname, buffer } = file;
-      const imagePath = `./uploads/${originalname}`;
+      const imagePath = `./uploads/${uuidv4()}${originalname}`;
       fs.writeFileSync(imagePath, buffer);
       const data = {
         title: portfolioDto.title,
@@ -50,7 +51,7 @@ export class PortfolioService {
       const portfolio = await this.portfolioModel.findByIdAndUpdate(id, data, {
         new: true,
       });
-      return portfolio;
+      return { data: portfolio };
     }
     const data = {
       title: portfolioDto.title,
@@ -59,7 +60,7 @@ export class PortfolioService {
     const portfolio = await this.portfolioModel.findByIdAndUpdate(id, data, {
       new: true,
     });
-    return portfolio;
+    return { data: portfolio };
   }
 
   async deletePortfolio(id: string): Promise<string> {

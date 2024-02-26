@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import * as fs from 'fs';
 import { Team } from './schemas/team.schema';
 import { CreateTeamDto } from './dto/create-team.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TeamService {
@@ -22,7 +23,7 @@ export class TeamService {
     file: File & { buffer: Buffer; originalname: string },
   ): Promise<object> {
     const { originalname, buffer } = file;
-    const imagePath = `./uploads/${originalname}`;
+    const imagePath = `./uploads/${uuidv4()}${originalname}`;
     fs.writeFileSync(imagePath, buffer);
     const data = {
       position: teamDto.position,
@@ -31,7 +32,9 @@ export class TeamService {
       photoLink: `${process.env.URL}${originalname}`,
     };
     const team = await this.teamModel.create(data);
-    return team;
+    return {
+      data: team,
+    };
   }
 
   async updateTeam(
@@ -41,7 +44,7 @@ export class TeamService {
   ): Promise<object> {
     if (file) {
       const { originalname, buffer } = file;
-      const imagePath = `./uploads/${originalname}`;
+      const imagePath = `./uploads/${uuidv4()}${originalname}`;
       fs.writeFileSync(imagePath, buffer);
       const data = {
         position: teamDto.position,
@@ -52,7 +55,9 @@ export class TeamService {
       const team = await this.teamModel.findByIdAndUpdate(id, data, {
         new: true,
       });
-      return team;
+      return {
+        data: team,
+      };
     }
     const data = {
       position: teamDto.position,
@@ -62,7 +67,9 @@ export class TeamService {
     const team = await this.teamModel.findByIdAndUpdate(id, data, {
       new: true,
     });
-    return team;
+    return {
+      data: team,
+    };
   }
 
   async deleteTeam(id: string): Promise<string> {
