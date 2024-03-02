@@ -74,7 +74,7 @@ export class TranslationService {
     if (!findTranslation) {
       throw new Error('Translation not found');
     }
-    findTranslation[key] = translation;
+    findTranslation[key] = translation
     await findTranslation.save();
     return findTranslation;
   }
