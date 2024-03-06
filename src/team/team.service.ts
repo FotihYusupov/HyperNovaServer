@@ -13,9 +13,11 @@ export class TeamService {
     private readonly teamModel: Model<Team>,
   ) {}
 
-  async getAll(): Promise<Team[]> {
+  async getAll(): Promise<object> {
     const team = await this.teamModel.find();
-    return team;
+    return {
+      data: team,
+    };
   }
 
   async createTeam(
