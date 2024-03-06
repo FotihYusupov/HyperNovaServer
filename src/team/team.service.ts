@@ -23,13 +23,14 @@ export class TeamService {
     file: File & { buffer: Buffer; originalname: string },
   ): Promise<object> {
     const { originalname, buffer } = file;
-    const imagePath = `./uploads/${uuidv4()}${originalname}`;
+    const image = `${uuidv4()}${originalname}`;
+    const imagePath = `./uploads/${image}`;
     fs.writeFileSync(imagePath, buffer);
     const data = {
       position: teamDto.position,
       level: teamDto.level,
       tools: teamDto.tools,
-      photoLink: `${process.env.URL}${originalname}`,
+      photoLink: `${process.env.URL}${image}`,
     };
     const team = await this.teamModel.create(data);
     return {
@@ -44,13 +45,14 @@ export class TeamService {
   ): Promise<object> {
     if (file) {
       const { originalname, buffer } = file;
-      const imagePath = `./uploads/${uuidv4()}${originalname}`;
+      const image = `${uuidv4()}${originalname}`;
+      const imagePath = `./uploads/${image}`;
       fs.writeFileSync(imagePath, buffer);
       const data = {
         position: teamDto.position,
         level: teamDto.level,
         tools: teamDto.tools,
-        photoLink: `${process.env.URL}${originalname}`,
+        photoLink: `${process.env.URL}${image}`,
       };
       const team = await this.teamModel.findByIdAndUpdate(id, data, {
         new: true,

@@ -2,18 +2,37 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { Response } from 'express';
+import { join } from 'path';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('image/:filename')
+  async getImage(
+    @Param('filename') filename: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const imagePath = join(
+      process.cwd(),
+      'nest-template',
+      '..',
+      'uploads',
+      filename,
+    );
+    res.sendFile(imagePath);
+  }
 
   @Post('login')
   login(@Body() user: LoginUserDto): Promise<object> {

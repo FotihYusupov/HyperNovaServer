@@ -27,6 +27,7 @@ export class VacancyController {
     @Body()
     createVacancy: CreateVacancy,
   ): Promise<object> {
+    console.log(createVacancy);
     return this.vacancyService.createVacancy(createVacancy);
   }
 

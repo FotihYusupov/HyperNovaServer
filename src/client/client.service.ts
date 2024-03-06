@@ -23,11 +23,12 @@ export class ClientService {
     file: File & { buffer: Buffer; originalname: string },
   ): Promise<object> {
     const { originalname, buffer } = file;
-    const imagePath = `./uploads/${uuidv4()}${originalname}`;
+    const image = `${uuidv4()}${originalname}`;
+    const imagePath = `./uploads/${uuidv4()}${image}`;
     fs.writeFileSync(imagePath, buffer);
     const data = {
       title: clientDto.title,
-      photoLink: `${process.env.URL}${originalname}`,
+      photoLink: `${process.env.URL}${image}`,
     };
     const client = await this.clientModel.create(data);
     return { data: client };
@@ -40,11 +41,12 @@ export class ClientService {
   ): Promise<object> {
     if (file) {
       const { originalname, buffer } = file;
-      const imagePath = `./uploads/${uuidv4()}${originalname}`;
+      const image = `${uuidv4()}${originalname}`;
+      const imagePath = `./uploads/${image}`;
       fs.writeFileSync(imagePath, buffer);
       const data = {
         title: clientDto.title,
-        photoLink: `${process.env.URL}${originalname}`,
+        photoLink: `${process.env.URL}${image}`,
       };
       const client = await this.clientModel.findByIdAndUpdate(id, data, {
         new: true,
