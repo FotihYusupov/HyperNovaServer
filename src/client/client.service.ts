@@ -24,7 +24,7 @@ export class ClientService {
   ): Promise<object> {
     const { originalname, buffer } = file;
     const image = `${uuidv4()}${originalname}`;
-    const imagePath = `./uploads/${uuidv4()}${image}`;
+    const imagePath = `./uploads/${image}`;
     fs.writeFileSync(imagePath, buffer);
     const data = {
       title: clientDto.title,
